@@ -11,8 +11,8 @@ WIFI_PASSWORD = ''
 
 # Danh sách các thiết bị với access token
 DEVICES_INFO = [
-    {'access_token': 'uW2CtdjGE20NzJrIuvRN'},  # Device 1
-    {'access_token': 'pDLvQ3j3QV3E9q8Sy9RG'},  # Device 2
+    {'name': 'DEVICE_1', 'access_token': 'uW2CtdjGE20NzJrIuvRN'},  # Device 1
+    {'name': 'DEVICE_2', 'access_token': 'pDLvQ3j3QV3E9q8Sy9RG'},  # Device 2
 ]
 
 clients = []
@@ -27,15 +27,15 @@ def connect_wifi():
         time.sleep(0.5)
     print("\nConnected to WiFi!")
 
-def create_client(device_id, access_token):
-    client = MQTTClient(f'DEVICE_{device_id}', THINGSBOARD_HOST, user=access_token, password='')
+def create_client(device_name, access_token):
+    client = MQTTClient(device_name, THINGSBOARD_HOST, user=access_token, password='')
     return client
 
 def setup_clients():
-    for device_id, device in enumerate(DEVICES_INFO):
-        client = create_client(device_id, device['access_token'])
+    for device in DEVICES_INFO:
+        client = create_client(device['name'], device['access_token'])
         client.connect()
-        print(f"[Device {device_id}] Connected and ready.")
+        print(f"[{device['name']}] Connected and ready.")
         clients.append(client)
 
 def read_temperature():
@@ -47,15 +47,15 @@ def read_humidity():
     return round(50 + random.uniform(-10, 10), 2)
 
 def publish_telemetry():
-    for device_id, device in enumerate(DEVICES_INFO):
+    for device, client in zip(DEVICES_INFO, clients):
         temperature = read_temperature()
         humidity = read_humidity()
         telemetry = {
             "temperature": temperature,
             "humidity": humidity
         }
-        clients[device_id].publish('v1/devices/me/telemetry', ujson.dumps(telemetry))
-        print(f"[Device {device_id}] Published telemetry: {telemetry}")
+        client.publish('v1/devices/me/telemetry', ujson.dumps(telemetry))
+        print(f"[{device['name']}] Published telemetry: {telemetry}")
 
 # Kết nối WiFi
 connect_wifi()
