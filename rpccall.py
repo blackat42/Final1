@@ -5,7 +5,7 @@ from umqtt.simple import MQTTClient
 import machine
 
 THINGSBOARD_HOST = 'app.coreiot.io'  # Or your server address
-ACCESS_TOKEN = 'pp11caxojei2t9vq8iyx'
+ACCESS_TOKEN = ''
 WIFI_SSID = 'Wokwi-GUEST'
 WIFI_PASSWORD = ''
 
