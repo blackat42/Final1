@@ -11,8 +11,8 @@ WIFI_PASSWORD = ''
 
 # Danh sách các thiết bị với access token
 DEVICES_INFO = [
-    {'name': 'DEVICE_1', 'access_token': 'uW2CtdjGE20NzJrIuvRN'},  # Device 1
-    {'name': 'DEVICE_2', 'access_token': 'pDLvQ3j3QV3E9q8Sy9RG'},  # Device 2
+    {'name': 'DEVICE_1', 'access_token': ''},  # Device 1
+    {'name': 'DEVICE_2', 'access_token': ''},  # Device 2
 ]
 
 clients = []
