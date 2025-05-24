@@ -3,17 +3,22 @@ import time
 import ujson
 from umqtt.simple import MQTTClient
 import machine
-import random  # Giả lập dữ liệu cảm biến
+import random
 
-THINGSBOARD_HOST = 'app.coreiot.io'  # Hoặc địa chỉ server của bạn
+THINGSBOARD_HOST = 'app.coreiot.io'
 WIFI_SSID = 'Wokwi-GUEST'
 WIFI_PASSWORD = ''
 
 # Danh sách các thiết bị với access token
 DEVICES_INFO = [
-    {'name': 'DEVICE_1', 'access_token': ''},  # Device 1
-    {'name': 'DEVICE_2', 'access_token': ''},  # Device 2
+    {
+        'name': 'Sensor C1',
+        'client_id': 'your_id',
+        'username': 'your_username',
+        'password': 'your_password'
+    },
 ]
+
 
 clients = []
 
@@ -27,16 +32,18 @@ def connect_wifi():
         time.sleep(0.5)
     print("\nConnected to WiFi!")
 
-def create_client(device_name, access_token):
-    client = MQTTClient(device_name, THINGSBOARD_HOST, user=access_token, password='')
+def create_client(client_id, username, password):
+    client = MQTTClient(client_id, THINGSBOARD_HOST, user=username, password=password)
     return client
 
 def setup_clients():
     for device in DEVICES_INFO:
-        client = create_client(device['name'], device['access_token'])
+        print(device['client_id'], device['username'], device['password'])
+        client = create_client(device['client_id'], device['username'], device['password'])
         client.connect()
         print(f"[{device['name']}] Connected and ready.")
         clients.append(client)
+
 
 def read_temperature():
     # Giả lập đọc nhiệt độ
@@ -54,7 +61,7 @@ def publish_telemetry():
             "temperature": temperature,
             "humidity": humidity
         }
-        client.publish('v1/devices/me/telemetry', ujson.dumps(telemetry))
+        client.publish('esp/telemetry', ujson.dumps(telemetry))
         print(f"[{device['name']}] Published telemetry: {telemetry}")
 
 # Kết nối WiFi
